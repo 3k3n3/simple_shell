@@ -8,14 +8,12 @@
  * Return: Success 0 or -1 if fail
  */
 
-int main(int argc, char **argv)
+int main(__attribute__((unused))int argc, char **argv)
 {
-	char *line = NULL, *line_cpy = NULL;
-	size_t len = 0;
 	ssize_t nread;
-
-	const char *delim = " \t\r\n";
-	int ntoken = 0, i = 0;
+	int i;
+	size_t len = 0;
+	char *line = NULL, *line_cpy = NULL;
 
 	while (1 == 1)
 	{
@@ -31,13 +29,12 @@ int main(int argc, char **argv)
 
 		_strcpy(line_cpy, line);
 
-		char **argv = split_line(line, nread);
-
+		argv = split_line(line, nread);
 		if (argv[0] != NULL)
 		{
 			int is_builtin = 0;
 
-			for (i = 0; i < num_builtins; i++)
+			for (i = 0; i < num_builtins(); i++)
 			{
 				if (_strcmp(argv[0], builtins[i].name) == 0)
 				{

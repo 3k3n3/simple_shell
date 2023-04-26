@@ -11,11 +11,11 @@ void exec(char **argv)
 	pid_t child_pid = fork();
 	int status, i;
 
-	for (i = 0; i < num_builtins; i++)
+	for (i = 0; i < num_builtins(); i++)
 	{
 		if (_strcmp(argv[0], builtins[i].name) == 0)
 		{
-			builtins[i].func(argv);
+			(*builtins[i].func)(argv);
 			return;
 		}
 	}

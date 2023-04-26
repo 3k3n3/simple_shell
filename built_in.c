@@ -6,7 +6,7 @@
  *
  * Return: void
  */
-void hsh_exit(char **argv)
+void hsh_exit(__attribute__((unused))char **argv)
 {
 	exit(0);
 }
@@ -29,11 +29,11 @@ void hsh_cd(char **argv)
 
 /**
  * hsh_help - print help information
- * @argv: argument/command
+ * @argv: argument
  *
  * Return: void
  */
-void hsh_help(char **argv)
+void hsh_help(__attribute__((unused))char **argv)
 {
 	char info[] =
 		"ALX Simple Shell Project\n"
@@ -45,10 +45,32 @@ void hsh_help(char **argv)
 	printf("%s", info);
 }
 
+
+/**
+ * struct builtin - struct
+ *
+ * Description: registering the association between
+ * a command name and its handler function
+ */
 struct builtin builtins[] = {
-	{"help", hsh_help},
-	{"exit", hsh_exit},
-	{"cd", hsh_cd},
+	{
+		"help",	hsh_help
+	},
+	{
+		"exit",	hsh_exit
+	},
+	{
+		"cd", hsh_cd
+	},
 };
 
-int num_builtins = sizeof(builtins) / sizeof(struct builtin);
+
+/**
+ * num_builtins - handler function for struct builtin
+ *
+ * Return: size
+ */
+int num_builtins(void)
+{
+	return (sizeof(builtins) / sizeof(struct builtin));
+}

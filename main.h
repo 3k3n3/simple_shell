@@ -25,9 +25,7 @@ struct builtin
 	char *name;
 	void (*func)(char **argv);
 };
-
 extern struct builtin builtins[];
-extern int num_builtins;
-/*extern int num_builtins = sizeof(builtins) / sizeof(struct builtin);*/
+extern int num_builtins(void);
 
 #endif/*MAIN_H*/
