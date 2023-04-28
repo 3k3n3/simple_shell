@@ -1,12 +1,13 @@
 #include "main.h"
 
+
 /**
- * checkSetenv - Built-In checker for setenv
- * @str: String to compare
+ * check_setenv - check setenv
+ * @str: string
  *
- * Return: If there's a coincidence or not
+ * Return: 0 or 1
  */
-int checkSetenv(char *str)
+int check_setenv(char *str)
 {
 	char *cpy = _strdup(str), *name = NULL, *value = NULL;
 
@@ -20,7 +21,7 @@ int checkSetenv(char *str)
 			free(cpy);
 			return (1);
 		}
-		_setenv(name, value, 1);
+		set_env(name, value, 1);
 		free(cpy);
 		return (1);
 	}
@@ -28,13 +29,14 @@ int checkSetenv(char *str)
 	return (0);
 }
 
+
 /**
- * checkUnset - Built-In checker for unsetenv
- * @str: String to compare
+ * check_unsetenv - check for unsetenv
+ * @str: string
  *
- * Return: If there's a coincidence or not
+ * Return: 0 or 1
  */
-int checkUnset(char *str)
+int check_unsetenv(char *str)
 {
 	char *cpy = _strdup(str), *token = NULL;
 
@@ -47,7 +49,7 @@ int checkUnset(char *str)
 			free(cpy);
 			return (1);
 		}
-		if (_unsetenv(token) == -1)
+		if (unset_env(token) == -1)
 		{
 			write(STDERR_FILENO, "can't unset non-existent variable\n", 35);
 			free(cpy);
@@ -60,39 +62,20 @@ int checkUnset(char *str)
 	return (0);
 }
 
+
 /**
- * checkExit - Built-In checker for exit
- * @str: String to compare
+ * check_exit - check for exit
+ * @str: string
  *
- * Return: If there's a coincidence or not
+ * Return: 0 or 1
  */
-int checkExit(char *str)
+int check_exit(char *str)
 {
 	char *cpy = _strdup(str);
 
 	if (strcmp(_strtok(cpy, ' '), "exit") == 0)
 	{
 		free(cpy);
-		return (1);
-	}
-	free(cpy);
-	return (0);
-}
-
-/**
- * checkEnv - Built-In checker for env
- * @str: String to compare
- *
- * Return: If there's a coincidence or not
- */
-int checkEnv(char *str)
-{
-	char *cpy = _strdup(str);
-
-	if (strcmp(_strtok(cpy, ' '), "env") == 0)
-	{
-		free(cpy);
-		printenv();
 		return (1);
 	}
 	free(cpy);

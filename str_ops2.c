@@ -133,7 +133,7 @@ char **tokenize(char *str, int built_in)
 	int size = 0, n = 0;
 	struct stat st = {0};
 
-	size = args(str);
+	size = argc(str);
 	arr = malloc(sizeof(char *) * (size + 1));
 	if (!arr)
 		return (NULL);
@@ -179,7 +179,7 @@ char **tokenize(char *str, int built_in)
 char *clean_str(char *str, int count)
 {
 	str[count - 1] = '\0';
-	str = searchAndDestroy(str);
-	str = comments(str);
+	str = rm_tab(str);
+	str = comment_hash(str);
 	return (str);
 }

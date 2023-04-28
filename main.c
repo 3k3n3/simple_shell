@@ -2,34 +2,37 @@
 
 /**
  * main - Recreation of a "sh"
+ * @argc: argunment count
+ * @argv: argument vector, array of args
  *
  * Return: 0 If succeed, or the number of the error
  */
-int main(void)
+int main(__attribute__((unused))int argc, char **argv)
 {
 	size_t i = 0;
-	int counter = 0, builtIn = 0, status = 0, exitValue = 0, child_pid = 0;
-	char *buffer = NULL, **argv = NULL, *dup = NULL;
+	int count = 0, builtin = 0, status = 0, exit_val = 0, child_pid = 0;
+	char *buffer = NULL, *dup = NULL;
 
 	while (1)
 	{
 		isatty_signal();
-		counter = getline(&buffer, &i, stdin);
-		if (counter == -1)
-			free_and_exit(buffer);
-		if (_checkChars(buffer) == -1)
+		count = getline(&buffer, &i, stdin);
+		if (count == -1)
+			free_exit(buffer);
+		if (check_hash(buffer) == -1)
 			continue;
-		buffer = clean_str(buffer, counter);
-		builtIn = _checkBuiltIn(buffer);
-		if (builtIn == 1)
+
+		buffer = clean_str(buffer, count);
+		builtin = check_builtin(buffer);
+		if (builtin == 1)
 		{
 			if (get_return_val(buffer) >= 0)
 				break;
 			continue;
 		}
 		dup = _strdup(buffer);
-		argv = tokenize(dup, builtIn);
-		if ((builtIn == 0 && is_exec(argv[0]) == 0))
+		argv = tokenize(dup, builtin);
+		if ((builtin == 0 && is_exec(argv[0]) == 0))
 			child_pid = child_fork(child_pid, argv[0]);
 		else
 			child_pid = 1;
@@ -39,10 +42,11 @@ int main(void)
 			break;
 		}
 		if (child_pid != 0)
-			waitAndFree(status, argv, dup);
+			wait_free(status, argv, dup);
 	}
-	if (builtIn != 1)
+	if (builtin != 1)
 		free_array_dup(argv, dup);
-	free_buff_and_env(buffer);
-	return (exitValue);
+
+	free_buff_env(buffer);
+	return (exit_val);
 }
