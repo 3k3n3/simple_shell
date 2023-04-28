@@ -1,53 +1,48 @@
 #include "main.h"
 
 /**
- * main - Entry point for simple shell
- * @argc: argument count
- * @argv: argument vector (arrray conataining args)
+ * main - Recreation of a "sh"
  *
- * Return: Success 0 or -1 if fail
+ * Return: 0 If succeed, or the number of the error
  */
-
-int main(__attribute__((unused))int argc, char **argv)
+int main(void)
 {
-	ssize_t nread;
-	int i;
-	size_t len = 0;
-	char *line = NULL, *line_cpy = NULL;
+	size_t i = 0;
+	int counter = 0, builtIn = 0, status = 0, exitValue = 0, child_pid = 0;
+	char *buffer = NULL, **argv = NULL, *dup = NULL;
 
-	while (1 == 1)
+	while (1)
 	{
-		printf("($) ");
-		nread = getline(&line, &len, stdin);
-
-		if (nread == -1)
-			return (-1);
-
-		line_cpy =  malloc(sizeof(char) * nread);
-		if (line_cpy == NULL)
-			return (-1);
-
-		_strcpy(line_cpy, line);
-
-		argv = split_line(line, nread);
-		if (argv[0] != NULL)
+		isatty_signal();
+		counter = getline(&buffer, &i, stdin);
+		if (counter == -1)
+			free_and_exit(buffer);
+		if (_checkChars(buffer) == -1)
+			continue;
+		buffer = clean_str(buffer, counter);
+		builtIn = _checkBuiltIn(buffer);
+		if (builtIn == 1)
 		{
-			int is_builtin = 0;
-
-			for (i = 0; i < num_builtins(); i++)
-			{
-				if (_strcmp(argv[0], builtins[i].name) == 0)
-				{
-					builtins[i].func(argv);
-					is_builtin = 1;
-					break;
-				}
-			}
-			if (!is_builtin)
-				exec(argv);
+			if (get_return_val(buffer) >= 0)
+				break;
+			continue;
 		}
+		dup = _strdup(buffer);
+		argv = tokenize(dup, builtIn);
+		if ((builtIn == 0 && is_exec(argv[0]) == 0))
+			child_pid = child_fork(child_pid, argv[0]);
+		else
+			child_pid = 1;
+		if (child_pid == 0 && execve(argv[0], argv, environ) == -1)
+		{
+			perror(argv[0]);
+			break;
+		}
+		if (child_pid != 0)
+			waitAndFree(status, argv, dup);
 	}
-	free(line_cpy);
-	free(argv);
-	free(line);
+	if (builtIn != 1)
+		free_array_dup(argv, dup);
+	free_buff_and_env(buffer);
+	return (exitValue);
 }

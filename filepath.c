@@ -8,7 +8,7 @@
  */
 char *path(char *filename)
 {
-	char *PATH = _getenv("PATH");
+	char *PATH = get_env("PATH");
 	char *cpy = _strdup(PATH), *concatenated = NULL;
 	char *token = NULL, *absolute = NULL;
 	struct stat st;
