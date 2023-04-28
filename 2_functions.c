@@ -43,7 +43,7 @@ char *comment_hash(char *str)
 		{
 			hashtag++;
 			break;
-		}	
+		}
 	}
 	if (hashtag == 0)
 		return (str);
